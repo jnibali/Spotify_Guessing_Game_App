@@ -1,20 +1,15 @@
-package com.example.final_app
+package com.example.finalapp
 
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import com.example.final_app.databinding.ActivityMainBinding
+import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.example.finalapp.databinding.ActivityMainBinding
 import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.SpotifyAppRemote
 import com.spotify.android.appremote.api.Connector
-import com.spotify.protocol.types.Track
 
 
 class MainActivity : AppCompatActivity() {
@@ -23,16 +18,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val ClientID: String = "0e94fc1ee6bf47ff84b2f72bfed235b9"
     private var mSpotifyapp: SpotifyAppRemote? = null
+    private val redirectUri = "com.localhost.Spotifyguessinggame://callback"
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {(ZygoteInit.java:947)
+        Caused by: com.spotify.protocol.client.error.
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-    }
 
-    override fun onStart() {
-        super.onStart()
         val connectionParams = ConnectionParams.Builder(ClientID)
+            .setRedirectUri(redirectUri)
             .showAuthView(true)
             .build()
 
@@ -51,16 +45,45 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    /*override fun onStart() {
+        super.onStart()
+        val connectionParams = ConnectionParams.Builder(ClientID)
+            .showAuthView(true)
+            .build()
+
+        SpotifyAppRemote.connect(this, connectionParams, object : Connector.ConnectionListener {
+            override fun onConnected(appRemote: SpotifyAppRemote) {
+                mSpotifyapp = appRemote
+                Log.d("MainActivity", "Connected! Yay!")
+                // Now you can start interacting with App Remote
+                connected()
+            }
+
+            override fun onFailure(throwable: Throwable) {
+                Log.e("MainActivity", throwable.message, throwable)
+                // Something went wrong when attempting to connect! Handle errors here
+            }
+        })
+    }*/
+
     private fun connected() {
         mSpotifyapp?.let {
             // Play a playlist
-            val playlistURI = "spotify:playlist:37i9dQZF1DX2sUQwD7tbmL"
+            val playlistURI = "spotify:album:7ebnxkx8HZNvtTB3me1S9C"
             it.playerApi.play(playlistURI)
-            // Subscribe to PlayerState
             it.playerApi.subscribeToPlayerState().setEventCallback {
-                val track: Track = it.track
-                Log.d("MainActivity", track.name + " by " + track.artist.name)
+                val trackName: String = it.track.name
+                val icon = it.track.imageUri
+
+                Glide.with(this)
+                    .load(icon)
+                    .into(findViewById(R.id.iv_track_icon))
+
+                findViewById<TextView>(R.id.track_Description).text =
+                    trackName
             }
+
+
         }
 
     }
