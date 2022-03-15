@@ -20,8 +20,7 @@ class MainActivity : AppCompatActivity() {
     private var mSpotifyapp: SpotifyAppRemote? = null
     private val redirectUri = "com.localhost.Spotifyguessinggame://callback"
 
-    override fun onCreate(savedInstanceState: Bundle?) {(ZygoteInit.java:947)
-        Caused by: com.spotify.protocol.client.error.
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
